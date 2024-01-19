@@ -20,7 +20,7 @@ def get_timestamp():
     return datetime.now().strftime('_%y%m%d_%H%M%S')
 
 
-def parse(opt_path, is_train=True):
+def parse(opt_path, is_train=True, args=None):
 
     # ----------------------------------------
     # remove comments starting with '//'
@@ -38,6 +38,18 @@ def parse(opt_path, is_train=True):
 
     opt['opt_path'] = opt_path
     opt['is_train'] = is_train
+
+    # override opt with parser arguments
+    if args is not None :
+        opt['train']['G_loss_form'] = args.G_loss_form
+        opt['task'] += f'_loss_form_{args.G_loss_form}'
+        if args.gpu_ids:
+            opt['gpu_ids'] = args.gpu_ids
+        if args.suffix:
+            opt['task'] += '_'+args.suffix
+        if args.dataroot_H :
+            opt['datasets']['train']['dataroot_H'] = args.dataroot_H
+    
 
     # ----------------------------------------
     # set default
@@ -58,7 +70,13 @@ def parse(opt_path, is_train=True):
         dataset['scale'] = opt['scale']  # broadcast
         dataset['n_channels'] = opt['n_channels']  # broadcast
         if 'dataroot_H' in dataset and dataset['dataroot_H'] is not None:
-            dataset['dataroot_H'] = os.path.expanduser(dataset['dataroot_H'])
+            if isinstance(dataset['dataroot_H'], str):
+                dataset['dataroot_H'] = os.path.expanduser(dataset['dataroot_H'])
+            elif isinstance(dataset['dataroot_H'], list):
+                paths = []
+                for i in dataset['dataroot_H']:
+                    paths.append(os.path.expanduser(i))
+                dataset['dataroot_H'] = paths
         if 'dataroot_L' in dataset and dataset['dataroot_L'] is not None:
             dataset['dataroot_L'] = os.path.expanduser(dataset['dataroot_L'])
 

@@ -182,7 +182,8 @@ def define_G(opt):
                    act_mode=opt_net['act_mode'],
                    downsample_mode=opt_net['downsample_mode'],
                    upsample_mode=opt_net['upsample_mode'],
-                   bias=opt_net['bias'])
+                   bias=opt_net['bias'],
+                   residual_learning=opt_net['residual_learning'])
 
     # ----------------------------------------
     # SwinIR

@@ -74,6 +74,7 @@ class DatasetDnCNN(data.Dataset):
             noise = torch.randn(img_L.size()).mul_(self.sigma/255.0)
             img_L.add_(noise)
 
+
         else:
             """
             # --------------------------------
@@ -94,6 +95,18 @@ class DatasetDnCNN(data.Dataset):
             # --------------------------------
             img_L = util.single2tensor3(img_L)
             img_H = util.single2tensor3(img_H)
+
+
+            # --------------------------------
+            # Maybe the skip connection output(x1).size() != upsampled output(x).size()
+            # Take action
+            # --------------------------------
+            h,w = img_H.size()[1], img_H.size()[2]
+            h8, w8 = (h//8)*8, (w//8)*8
+
+            img_L = img_L[:,:h8,:w8]
+            img_H = img_H[:,:h8,:w8]
+
 
         return {'L': img_L, 'H': img_H, 'H_path': H_path, 'L_path': L_path}
 

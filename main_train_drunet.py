@@ -1,4 +1,5 @@
 import os.path
+import ast
 import math
 import argparse
 import time
@@ -42,7 +43,19 @@ def main(json_path='options/train_drunet.json'):
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument('--dist', default=False)
 
-    opt = option.parse(parser.parse_args().opt, is_train=True)
+    parser.add_argument('--G_loss_form', type=int, default=None)
+    parser.add_argument('--gpu_ids', type=ast.literal_eval, default=None)
+    parser.add_argument('--epochs', type=int, default=1000000)
+    parser.add_argument('--save_dir', type=str, default=None, help='Nothing working. Modify codes for changing saving dir')
+    parser.add_argument('--suffix', type=str, default=None)
+    parser.add_argument('--dataroot_H', type=ast.literal_eval, default=None)
+
+
+
+
+
+    args = parser.parse_args()
+    opt = option.parse(args.opt, is_train=True, args=args)
     opt['dist'] = parser.parse_args().dist
 
     # ----------------------------------------

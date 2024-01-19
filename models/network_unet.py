@@ -19,8 +19,10 @@ year={2020}
 
 
 class UNetRes(nn.Module):
-    def __init__(self, in_nc=3, out_nc=3, nc=[64, 128, 256, 512], nb=4, act_mode='R', downsample_mode='strideconv', upsample_mode='convtranspose', bias=True):
+    def __init__(self, in_nc=3, out_nc=3, nc=[64, 128, 256, 512], nb=4, act_mode='R', downsample_mode='strideconv', upsample_mode='convtranspose', bias=True, residual_learning=False):
         super(UNetRes, self).__init__()
+
+        self.residual_learning = residual_learning
 
         self.m_head = B.conv(in_nc, nc[0], bias=bias, mode='C')
 
@@ -73,7 +75,10 @@ class UNetRes(nn.Module):
         x = self.m_tail(x+x1)
 #        x = x[..., :h, :w]
 
-        return x
+        if self.residual_learning : 
+            return x0 - x
+        else:
+            return x
 
 
 if __name__ == '__main__':
