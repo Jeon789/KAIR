@@ -43,6 +43,9 @@ def parse(opt_path, is_train=True, args=None):
     if args is not None :
         opt['train']['G_loss_form'] = args.G_loss_form
         opt['task'] += f'_loss_form_{args.G_loss_form}'
+
+        opt['netG']['residual_learning'] = args.residual_learning
+        opt['train']['heron_regularizer'] = args.heron_regularizer
         if args.gpu_ids:
             opt['gpu_ids'] = args.gpu_ids
         if args.suffix:

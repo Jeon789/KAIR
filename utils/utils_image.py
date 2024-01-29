@@ -294,7 +294,17 @@ def tensor2uint(img):
     img = img.data.squeeze().float().clamp_(0, 1).cpu().numpy()
     if img.ndim == 3:
         img = np.transpose(img, (1, 2, 0))
-    return np.uint8((img*255.0).round())
+    try:
+        return np.uint8((img*255.0).round())
+    except:
+        breakpoint()
+
+
+
+    # return np.uint8((img*255.0).round())
+
+
+
 
 
 # --------------------------------------------

@@ -12,6 +12,7 @@ from models.loss_ssim import SSIMLoss
 
 from utils.utils_model import test_mode
 from utils.utils_regularizers import regularizer_orth, regularizer_clip
+from utils.utils_losses import heron_loss, heron_loss2, stable_heron_loss, triangle_loss
 
 
 class ModelPlain(ModelBase):
@@ -191,7 +192,7 @@ class ModelPlain(ModelBase):
 
 
         # loss_form 5 : heron
-        if self.G_loss_form == 5 or self.G_loss_form == 6 :
+        if self.G_loss_form == 5 or self.G_loss_form == 6 or self.G_loss_form == 7 or self.G_loss_form == 8 :
             self.E = self.netG(self.L)
             self.P = self.netG(self.H)
 
@@ -229,33 +230,19 @@ class ModelPlain(ModelBase):
             G_loss += self.G_lossfn_weight * self.G_lossfn(self.P, self.E)
 
         if self.G_loss_form == 5 :
-            pdist = torch.nn.PairwiseDistance(p=2)
-            batch_size = self.E.size()[0]
-            x = self.E.view(batch_size, -1)
-            f_x = self.P.view(batch_size, -1)
-            f_y = self.E.view(batch_size, -1)
-            a, b, c = pdist(x, f_x), pdist(x, f_y), pdist(f_x, f_y)
-            s = (a+b+c)/2
-            area = torch.sqrt( s*(s-a)*(s-b)*(s-c) )
-            G_loss += self.G_lossfn_weight * ( torch.mean(area) / torch.sqrt(x.size()[1]) )
-
+            G_loss += self.G_lossfn_weight * heron_loss(self.H, self.P, self.E, current_step=current_step, regularizer=self.opt_train['heron_regularizer']) # x, f(x), f(y)
 
         if self.G_loss_form == 6 :
-            pdist = torch.nn.PairwiseDistance(p=2)
-            batch_size = self.E.size()[0]
-            x = self.H.view(batch_size, -1)
-            f_x = self.P.view(batch_size, -1)
-            f_y = self.E.view(batch_size, -1)
-            a, b, c = pdist(x, f_x), pdist(x, f_y), pdist(f_x, f_y)
-            s = (a+b+c)/2
-            area = torch.sqrt( s*(s-a)*(s-b)*(s-c) )
-            G_loss += self.G_lossfn_weight * ( torch.mean(area) / math.sqrt(x.size()[1]) )
+            G_loss += self.G_lossfn_weight * heron_loss2(self.H, self.P, self.E, current_step=current_step, regularizer=self.opt_train['heron_regularizer'])
 
-            # 세변의 길이를 비슷하게 만든다. 정삼각형처럼 만든다.
-            # 삼각형이 무너져버리는 경우를 방지하기 위하여.
-            abc = torch.stack([a,b,c],dim=1)
-            regularizer = self.G_lossfn(torch.max(abc,1).values, torch.min(abc,1).values)
-            G_loss += 0.1 * self.G_lossfn_weight * regularizer
+        if self.G_loss_form == 7 :
+            G_loss += self.G_lossfn_weight * stable_heron_loss(self.H, self.P, self.E, current_step=current_step, regularizer=self.opt_train['heron_regularizer'])
+            # G_loss += self.G_lossfn_weight * self.G_lossfn(self.E, self.H)
+
+        if self.G_loss_form == 8 :
+            G_loss += self.G_lossfn_weight * triangle_loss(self.H, self.P, self.E)
+
+
         # -----------------------------------custom---------------------------------------
 
 

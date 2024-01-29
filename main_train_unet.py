@@ -31,7 +31,7 @@ from models.select_model import define_Model
 '''
 
 
-def main(json_path='options/train_drunet.json'):
+def main(json_path='options/train_unet.json'):
 
     '''
     # ----------------------------------------
@@ -45,14 +45,15 @@ def main(json_path='options/train_drunet.json'):
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument('--dist', default=False)
 
+
     parser.add_argument('--G_loss_form', type=int, default=None)
     parser.add_argument('--residual_learning', type=str2bool, default=False)
+    parser.add_argument('--heron_regularizer', type=str2bool, default=False)
     parser.add_argument('--gpu_ids', type=ast.literal_eval, default=None)
-    parser.add_argument('--epochs', type=int, default=250)
+    parser.add_argument('--epochs', type=int, default=1000)
 
 
-
-    parser.add_argument('--suffix', type=str, default=None)
+    parser.add_argument('--suffix', type=str, default=None, help='The suffix for the saving directory name.')
     parser.add_argument('--save_dir', type=str, default=None, help='Nothing working. Modify codes for changing saving dir')
     parser.add_argument('--dataroot_H', type=ast.literal_eval, default=None)
 
@@ -251,12 +252,14 @@ def main(json_path='options/train_drunet.json'):
                     current_psnr = util.calculate_psnr(E_img, H_img, border=border)
                     current_ssim = util.calculate_ssim(E_img, H_img, border=border)
 
-                    logger.info('{:->4d}--> {:>10s} | {:<4.2f}dB, {:3f}'.format(idx, image_name_ext, current_psnr, current_ssim))
+                    logger.info('{:->4d}--> {:>10s} | {:<4.2f}dB, {:.3f}'.format(idx, image_name_ext, current_psnr, current_ssim))
 
                     avg_psnr += current_psnr
                     avg_ssim += current_ssim
 
                 avg_psnr = avg_psnr / idx
+                avg_ssim = avg_ssim / idx
+
 
                 # testing log
                 logger.info('<epoch:{:3d}, iter:{:8,d}, Average PSNR : {:<.2f}dB, Average SSIM : {:<.3f} \n'.format(epoch, current_step, avg_psnr, avg_ssim))

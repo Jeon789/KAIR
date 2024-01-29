@@ -7,7 +7,7 @@
   , "n_channels": 3  // broadcast to "datasets", 1 for grayscale, 3 for color
 
   , "path": {
-    "root": "denoising"            // "denoising" | "superresolution"
+    "root": "/data/jan4021/Data/denoising/experiments"   // "denoising" | "superresolution"
     , "pretrained_netG": null      // path of pretrained model
   }
 
@@ -15,20 +15,20 @@
     "train": {
       "name": "train_dataset"           // just name
       , "dataset_type": "dncnn"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
-      , "dataroot_H": ["/data/jan4021/Data/denoising/BSD400",
-                        "/data/jan4021/Data/denoising/DIV2K",
-                        "/data/jan4021/Data/denoising/WaterlooED"] // path of H training dataset
+      , "dataroot_H": ["/data/jan4021/Data/denoising/data/BSD400",
+                        "/data/jan4021/Data/denoising/data/DIV2K",
+                        "/data/jan4021/Data/denoising/data/WaterlooED"] // path of H training dataset
       // , "dataroot_H": "trainsets/trainH"// path of H training dataset
       , "dataroot_L": null              // path of L training dataset
       , "H_size": 256                    // patch size 40 | 64 | 96 | 128 | 192
       , "dataloader_shuffle": true
-      , "dataloader_num_workers": 4
-      , "dataloader_batch_size": 64     // batch size 1 | 16 | 32 | 48 | 64 | 128
+      , "dataloader_num_workers": 0
+      , "dataloader_batch_size": 32     // batch size 1 | 16 | 32 | 48 | 64 | 128
     }
     , "test": {
       "name": "test_dataset"            // just name
       , "dataset_type": "dncnn"         // "dncnn" | "dnpatch" for dncnn,  | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch"
-      , "dataroot_H": "/data/jan4021/Data/denoising/test/BSD68"  // path of H testing dataset
+      , "dataroot_H": "/data/jan4021/Data/denoising/data/test/BSD68"  // path of H testing dataset
       // , "dataroot_H": "testsets/set12"  // path of H testing dataset
       , "dataroot_L": null              // path of L testing dataset
     }
@@ -50,7 +50,6 @@
     , "init_type": "orthogonal"         // "orthogonal" | "normal" | "uniform" | "xavier_normal" | "xavier_uniform" | "kaiming_normal" | "kaiming_uniform"
     , "init_bn_type": "uniform"         // "uniform" | "constant"
     , "init_gain": 0.2
-    , "residual_learning" : true
   }
 
   , "train": {
@@ -62,7 +61,7 @@
     , "G_optimizer_clipgrad": null      // unused
 
     , "G_scheduler_type": "MultiStepLR" // "MultiStepLR" is enough
-    , "G_scheduler_milestones": [2000,4000,6000,8000]
+    , "G_scheduler_milestones": [4000,8000,12000,16000]
     // , "G_scheduler_milestones": [100000,200000,300000,400000]
     , "G_scheduler_gamma": 0.5
 
@@ -70,7 +69,7 @@
     , "G_regularizer_clipstep": null    // unused
 
     , "checkpoint_test": 100           // for testing
-    , "checkpoint_save": 100           // for saving model
+    , "checkpoint_save": 1000           // for saving model
     , "checkpoint_print": 100           // for print
   }
 }

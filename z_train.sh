@@ -34,5 +34,38 @@
 # python main_train_unet.py --G_loss_form=0 --suffix=basic --gpu_ids="[0,1,2,3]" \
 #             --opt=options/train_unet.json
 
-python main_train_unet.py --G_loss_form=6 --suffix=heron --gpu_ids="[0,1,2,3]" \
-            --opt=options/train_unet.json
+
+
+
+# python main_train_unet.py --G_loss_form=7 --suffix=stable_heron_resi_reg --gpu_ids="[0,1,2,3]" \
+#             --opt=options/train_unet.json \
+#             --heron_regularizer=True \
+#             --residual_learning=True
+
+# python main_train_unet.py --G_loss_form=7 --suffix=stable_heron_resi --gpu_ids="[0,1,2,3]" \
+#             --opt=options/train_unet.json \
+#             --heron_regularizer=False \
+#             --residual_learning=True
+
+# python main_train_unet.py --G_loss_form=6 --suffix=heron2_resi_reg --gpu_ids="[0,1,2,3]" \
+#             --opt=options/train_unet.json \
+#             --heron_regularizer=True \
+#             --residual_learning=True
+
+# python main_train_unet.py --G_loss_form=6 --suffix=heron2_resi --gpu_ids="[0,1,2,3]" \
+#             --opt=options/train_unet.json \
+#             --heron_regularizer=False \
+#             --residual_learning=True
+
+
+
+
+# python main_train_unet.py --G_loss_form=5 --suffix=heron_resi_periodic2 --gpu_ids="[2,3]" \
+#             --opt=options/train_unet.json \
+#             --residual_learning=True \
+#             --heron_regularizer=False
+
+python main_train_unet.py --G_loss_form=0 --suffix=resi_pre_activate2 --gpu_ids="[2,3]" \
+            --opt=options/train_unet.json \
+            --residual_learning=True \
+            --heron_regularizer=False
